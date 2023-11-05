@@ -10,29 +10,30 @@ struct Item
 class Solution
 {
     public:
-    bool static comp(Item a,Item b)
-    {
-        return a.weight < b.weight;
-    }
-    int knapsack(int W, vector<Item> &arr)
-    {
-        int n = arr.size();
-        vector<vector<int>> dp(n+1,vector<int>(W+1,0));
-        for(int i=1;i<=n;i++)
+        bool static comp(Item a,Item b)
         {
-            for(int w=0;w<=W;w++)
+            return a.weight < b.weight;
+        }
+        int knapsack(int W,vector<Item> &arr)
+        {
+            int n = arr.size();
+            sort(arr.begin(),arr.end(),comp);
+            vector<vector<int>>dp(n+1,vector<int>(W+1,0));
+            for(int i=1;i<=n;i++)
             {
-                if(arr[i-1].weight>=W)
+                for(int w=0;w<=W;w++)
                 {
-                    dp[i][w] = dp[i-1][w];
-                }
-                else{
-                    dp[i][w] = max(dp[i][w],dp[i-1][w-arr[i-1].weight]+arr[i-1].value);
+                    if(arr[i-1].weight>w)
+                    {
+                        dp[i][w]=dp[i-1][w];
+                    }
+                    else{
+                        dp[i][w]=max(dp[i-1][w],dp[i-1][w-arr[i-1].weight]+arr[i-1].value);
+                    }
                 }
             }
+            return dp[n][W];
         }
-        return dp[n][W];
-    }
 };
 
 int main()
@@ -41,17 +42,14 @@ int main()
     cout<<"Enter n : ";
     cin>>n;
     int maxcap;
-    cout<<"Enter maximum capacity : ";
+    cout<<"Enter maxcap : ";
     cin>>maxcap;
     vector<Item> arr(n);
-    cout<<"Enter all items value and weight : "<<endl;
     for(int i=0;i<n;i++)
     {
         cin>>arr[i].value>>arr[i].weight;
     }
-    cout<<"All items entered...";
     Solution object;
-    int answer = object.knapsack(maxcap,arr);
-    cout<<answer;
-    return 0;
+    int ans = object.knapsack(maxcap,arr);
+    cout<<ans;
 }
